@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  ner:
+    container_name: ner
+    build:
+      context: .
+      dockerfile: ./services/ner/Dockerfile
+    volumes:
+      - ./services/ner:/src
+      - ~/data:/data
+    ports:
+      - 8000:8000
+    environment:
+      - CUDA_VISIBLE_DEVICES=5
