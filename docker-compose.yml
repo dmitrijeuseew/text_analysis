@@ -13,3 +13,15 @@ services:
       - 8000:8000
     environment:
       - CUDA_VISIBLE_DEVICES=5
+
+  entity-linking:
+    build:
+      context: .
+      dockerfile: ./services/entity_linking/Dockerfile
+    volumes:
+      - ./services/entity_linking:/src
+      - ~/data:/data
+    ports:
+      - 8001:8001
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
