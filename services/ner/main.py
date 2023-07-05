@@ -15,7 +15,7 @@ DATA_PATH = Path('/data')
 LOCKFILE = DATA_PATH / 'lockfile'
 LOG_PATH = DATA_PATH / 'logs'
 metrics_filename = DATA_PATH / "metrics_score_history.csv"
-ner_config = parse_config("ner.json")
+ner_config = parse_config("ner_rured.json")
 logger = getLogger(__file__)
 
 

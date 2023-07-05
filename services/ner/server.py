@@ -29,9 +29,9 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-entity_detection_config = parse_config("entity_detection.json")
+entity_detection_config = parse_config("entity_detection_rured.json")
 
-deep_download("entity_detection.json")
+deep_download("entity_detection_rured.json")
 initial_setup()
 
 entity_detection = build_model(entity_detection_config, download=False)
