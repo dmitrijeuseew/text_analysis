@@ -9,7 +9,7 @@ docker-compose up --build ner
 
 ### Set GPU number
 
-In ner\_system/docker-compose.yml file set the `CUDA_VISIBLE_DEVICES` variable for `ner` service.
+In ner\_system/docker-compose.yml file set the [CUDA_VISIBLE_DEVICES](https://github.com/dmitrijeuseew/ner_system/blob/aff351481c8c0487e7234ba009aacb4574ab414c/docker-compose.yml#L15) variable for `ner` service.
 
 ### Launch on GPU or CPU
 
@@ -17,4 +17,4 @@ In [configuration file](https://github.com/dmitrijeuseew/ner_system/blob/4a33589
 
 ### Examples of the request and output data structure
 
-In `[this file] <https://github.com/dmitrijeuseew/ner_system/blob/main/services/ner/example.py>`__ you can find description of output data elements and example of a query to the service.
+In [this file](https://github.com/dmitrijeuseew/ner_system/blob/main/services/ner/example.py) you can find description of output data elements and example of a query to the service.
