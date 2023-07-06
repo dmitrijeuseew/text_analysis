@@ -32,8 +32,9 @@
         "out": ["y_ind"]
       },
       {
-        "class_name": "torch_transformers_sequence_tagger",
+        "class_name": "torch_transformers_sequence_tagger:TorchTransformersSequenceTagger",
         "n_tags": "#tag_vocab.len",
+        "device": "gpu",
         "pretrained_bert": "{TRANSFORMER}",
         "attention_probs_keep_prob": 0.5,
         "use_crf": false,

@@ -89,6 +89,28 @@ class EntityDetectionParser(Component):
             probas_batch.append(entities_probas)
         return entities_batch, positions_batch, probas_batch
 
+    def correct_tags(self, tokens, tags, tag_probas):
+        for i in range(len(tags) - 2, -1, -1):
+            if tags[i].startswith("B-") and tags[i + 1].startswith("B-") \
+                    and tags[i].split("-")[1] != tags[i + 1].split("-")[1]:
+                probas_arr = [tag_probas[i][self.tags_ind[tags[i]]], tag_probas[i + 1][self.tags_ind[tags[i + 1]]]]
+                max_ind = np.argmax(probas_arr)
+                max_ind_tag = tags[i + max_ind]
+                max_proba = probas_arr[max_ind]
+                tag_probas[i][self.tags_ind[max_ind_tag]] = tag_probas[i][self.tags_ind[tags[i]]]
+                tags[i] = max_ind_tag
+                tag_probas[i + 1][self.tags_ind[max_ind_tag]] = tag_probas[i + 1][self.tags_ind[tags[i + 1]]]
+                tags[i + 1] = max_ind_tag
+                
+        for i in range(len(tags) - 2, -1, -1):
+            if tags[i].startswith("B-") and tags[i + 1].startswith("B-") \
+                    and tags[i].split("-")[1] == tags[i + 1].split("-")[1]:
+                new_tag = f"I-{tags[i + 1].split('-')[1]}"
+                tag_probas[i + 1][self.tags_ind[new_tag]] = tag_probas[i + 1][self.tags_ind[tags[i + 1]]]
+                tags[i + 1] = new_tag
+
+        return tags, tag_probas
+
     def entities_from_tags(self, tokens, tags, tag_probas):
         """
         This method makes lists of substrings corresponding to entities and entity types
@@ -103,6 +125,7 @@ class EntityDetectionParser(Component):
             list of indices of tokens which correspond to entities (or a dict of tags (keys)
                 and list of indices of entity tokens)
         """
+        tags, tag_probas = self.correct_tags(tokens, tags, tag_probas)
         entities_dict = defaultdict(list)
         entity_dict = defaultdict(list)
         entity_positions_dict = defaultdict(list)

@@ -21,7 +21,7 @@ import torch
 from deeppavlov.core.commands.utils import expand_path
 from deeppavlov.core.common.errors import ConfigError
 from deeppavlov.core.common.registry import register
-from deeppavlov.core.models.torch_model import TorchModel
+from torch_model import TorchModel
 from deeppavlov.models.torch_bert.crf import CRF
 from overrides import overrides
 from transformers import AutoModelForTokenClassification, AutoConfig
@@ -167,6 +167,7 @@ class TorchTransformersSequenceTagger(TorchModel):
                  clip_norm: Optional[float] = None,
                  min_learning_rate: float = 1e-07,
                  use_crf: bool = False,
+                 device: str = "cpu",
                  **kwargs) -> None:
 
         self.n_classes = n_tags
@@ -184,6 +185,7 @@ class TorchTransformersSequenceTagger(TorchModel):
                          learning_rate_drop_div=learning_rate_drop_div,
                          load_before_drop=load_before_drop,
                          min_learning_rate=min_learning_rate,
+                         device=device,
                          **kwargs)
 
     def train_on_batch(self,
