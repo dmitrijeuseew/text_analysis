@@ -1,3 +1,4 @@
+import copy
 import datetime
 import json
 import subprocess
@@ -30,11 +31,14 @@ app.add_middleware(
 )
 
 entity_detection_config = parse_config("entity_detection_rured.json")
+entity_detection_lower_config = parse_config("entity_detection_collection3_lower.json")
 
 deep_download("entity_detection_rured.json")
+deep_download("entity_detection_collection3_lower.json")
 initial_setup()
 
 entity_detection = build_model(entity_detection_config, download=False)
+entity_detection_lower = build_model(entity_detection_lower_config, download=False)
 
 
 class Payload(BaseModel):
@@ -43,15 +47,45 @@ class Payload(BaseModel):
 
 @app.post("/model")
 async def model(payload: Payload):
-    entity_substr, entity_offsets, entity_positions, tags, sentences_offsets, sentences, probas = entity_detection(
-        payload.x)
-    res = {"entity_substr": entity_substr,
-           "entity_offsets": entity_offsets,
-           "entity_positions": entity_positions,
-           "tags": tags,
-           "sentences_offsets": sentences_offsets,
-           "sentences": sentences,
-           "probas": probas}
+    substr_b, offsets_b, pos_b, tags_b, sent_offsets_b, sent_b, probas_b = entity_detection(payload.x)
+    substr_lw_b, offsets_lw_b, pos_lw_b, tags_lw_b, sent_offsets_lw_b, sent_lw_b, probas_lw_b = \
+        entity_detection_lower(payload.x)
+
+    substr_bt, offsets_bt, pos_bt, tags_bt, probas_bt = [], [], [], [], []
+    for substr_l, offsets_l, pos_l, tags_l, probas_l, substr_lw_l, offsets_lw_l, pos_lw_l, tags_lw_l, probas_lw_l in \
+            zip(substr_b, offsets_b, pos_b, tags_b, probas_b, substr_lw_b, offsets_lw_b, pos_lw_b, tags_lw_b,
+                probas_lw_b):
+        substr_t = copy.deepcopy(substr_l)
+        offsets_t = copy.deepcopy(offsets_l)
+        pos_t = copy.deepcopy(pos_l)
+        tags_t = copy.deepcopy(tags_l)
+        probas_t = copy.deepcopy(probas_l)
+        for substr_lw, offsets_lw, pos_lw, tag_lw, probas_lw in \
+                zip(substr_lw_l, offsets_lw_l, pos_lw_l, tags_lw_l, probas_lw_l):
+            found = False
+            for offsets in offsets_l:
+                if offsets[0] <= offsets_lw[0] <= offsets[1] or offsets[0] <= offsets_lw[1] <= offsets[1]:
+                    found = True
+                    break
+            if not found:
+                substr_t.append(substr_lw)
+                offsets_t.append(offsets_lw)
+                pos_t.append(pos_lw)
+                tags_t.append(tag_lw)
+                probas_t.append(probas_lw)
+        substr_bt.append(substr_t)
+        offsets_bt.append(offsets_t)
+        pos_bt.append(pos_t)
+        tags_bt.append(tags_t)
+        probas_bt.append(probas_t)
+
+    res = {"entity_substr": substr_bt,
+           "entity_offsets": offsets_bt,
+           "entity_positions": pos_bt,
+           "tags": tags_bt,
+           "sentences_offsets": sent_offsets_b,
+           "sentences": sent_b,
+           "probas": probas_bt}
     return res
 
 
