@@ -1,7 +1,7 @@
 {
   "dataset_reader": {
     "class_name": "sq_reader",
-    "data_path": "{DOWNLOADS_PATH}/topic_cls/topics_dataset_chatgpt.json"
+    "data_path": "{DOWNLOADS_PATH}/topic_cls_2k_120.json"
   },
   "dataset_iterator": {
     "class_name": "basic_classification_iterator",
@@ -12,7 +12,7 @@
     "in_y": ["y"],
     "pipe": [
       {
-        "class_name": "torch_transformers_preprocessor",
+        "class_name": "torch_transformers_preprocessor:TorchTransformersPreprocessor",
         "vocab_file": "{TRANSFORMER}",
         "do_lower_case": false,
         "max_seq_length": 512,
@@ -36,7 +36,7 @@
         "single_vector": true
       },
       {
-        "class_name": "torch_transformers_classifier",
+        "class_name": "torch_transformers_classifier:TorchTransformersClassifierModel",
         "n_classes": "#classes_vocab.len",
         "return_probas": true,
         "pretrained_bert": "{TRANSFORMER}",
@@ -94,6 +94,10 @@
       {
         "url": "http://files.deeppavlov.ai/tmp/topic_cls_chatgpt_sp.tar.gz",
         "subdir": "{MODELS_PATH}/topic_cls_chatgpt_sp"
+      },
+      {
+        "url": "http://files.deeppavlov.ai/tmp/topic_cls_2k_120.json",
+        "subdir": "{DOWNLOADS_PATH}"
       }
     ]
   }

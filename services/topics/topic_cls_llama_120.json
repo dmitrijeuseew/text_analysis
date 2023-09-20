@@ -12,7 +12,7 @@
     "in_y": ["y"],
     "pipe": [
       {
-        "class_name": "torch_transformers_preprocessor",
+        "class_name": "torch_transformers_preprocessor:TorchTransformersPreprocessor",
         "vocab_file": "{TRANSFORMER}",
         "do_lower_case": false,
         "max_seq_length": 512,
@@ -36,7 +36,7 @@
         "single_vector": true
       },
       {
-        "class_name": "torch_transformers_classifier",
+        "class_name": "torch_transformers_classifier:TorchTransformersClassifierModel",
         "n_classes": "#classes_vocab.len",
         "return_probas": true,
         "pretrained_bert": "{TRANSFORMER}",
