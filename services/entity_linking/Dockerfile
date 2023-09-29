@@ -34,6 +34,6 @@ RUN git clone https://github.com/deepmipt/DeepPavlov.git && \
 
 WORKDIR /src
 
-COPY . .
+COPY /services/entity_linking /src
 
-CMD python services/ner/server.py
+CMD python server.py

@@ -16,6 +16,6 @@ RUN pip install websockets
 
 WORKDIR /src
 
-COPY . .
+COPY /services/ner /src
 
-CMD python services/ner/server.py
+CMD python server.py
