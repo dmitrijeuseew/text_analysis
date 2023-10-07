@@ -1,106 +1,93 @@
+import json
 import os
 import pickle
 import re
 import cld3
 import pymorphy2
 import spacy
-from urllib.request import urlretrieve
+from deeppavlov import build_model
+from nltk import sent_tokenize
 from relevance_define import relevance_define
 
 
 class CallToAction:
-    def __init__(self, vectorizer_flname, vectorizer_url, svc_flname, svc_url):
-        if not os.path.exists("data"):
-            os.makedirs("data")
-        if not os.path.exists(f"data/{vectorizer_flname}"):
-            urlretrieve(vectorizer_url, f"data/{vectorizer_flname}")
-        if not os.path.exists(f"data/{svc_flname}"):
-            urlretrieve(svc_url, f"data/{svc_flname}")
-        with open(f"data/{vectorizer_flname}", 'rb') as inp:
-            self.tfidf_vectorizer = pickle.load(inp)
-        with open(f"data/{svc_flname}", 'rb') as inp:
-            self.svc = pickle.load(inp)
+    def __init__(self, config_name):
+        self.cls_model = build_model(config_name, download=True)
         self.nlp = spacy.load("ru_core_news_sm")
         self.morph = pymorphy2.MorphAnalyzer()
         self.rgx = re.compile("([\w']{2,})")
 
     def __call__(self, text):
-        cls_init = self.find_by_verbs(text)
+        cls_init, found_elements = self.find_by_verbs(text)
+        cls_batch, probas = self.cls_model([text])
+        is_relevant = relevance_define(text, cls_init, found_elements)
         if cls_init == "call":
-            is_relevant = relevance_define(text, cls_init)
             if is_relevant:
-                cls = self.find_class(text)
-                if cls == 0:
-                    return "call"
-            return "not a call"
-        return cls_init
+                if probas[0][2] > 0.5:
+                    return "call", cls_init, cls_batch[0], is_relevant, found_elements
+            return "not_call", cls_init, cls_batch[0], is_relevant, found_elements
+        return cls_init, cls_init, cls, is_relevant, found_elements
 
     def find_by_verbs(self, text):
         langs = ["ru", "bg"]
-        lang = cld3.get_language(text)
-        if lang is not None:
-            lang = lang[0]
-            if lang in langs:
-                if (
-                    self.check_action_words(text)
-                    or self.check_mood(text)
-                    or self.check_need_word(text)
-                ):
-                    return "call"  # action
-                else:
-                    return "not a call"  # not action
-        return "undefined"  # not russian
-
-    def find_class(self, text):
-        matrix = self.tfidf_vectorizer.transform([text])
-        dense_matrix = matrix.toarray()
-        cls = self.svc.predict(dense_matrix)
-        return cls
+        try:
+            lang = cld3.get_language(text)
+            if lang is not None:
+                lang = lang[0]
+                if lang in langs:
+                    found_elements = []
+                    lines = text.split("\n")
+                    lines = [line.strip() for line in lines if len(line.strip()) > 1]
+                    sentences = []
+                    for line in lines:
+                        sentences += sent_tokenize(line)
+                    for sentence in sentences:
+                        mood_words = self.check_mood(sentence)
+                        if mood_words:
+                            found_elements.append({"criteria": "mood", "words": mood_words, "sentence": sentence})
+                        need_words = self.check_need_word(sentence)
+                        if need_words:
+                            found_elements.append({"criteria": "need", "words": need_words, "sentence": sentence})
+                        action_word = self.check_action_words(sentence)
+                        if action_word:
+                            found_elements.append({"criteria": "action_word", "words": action_word, "sentence": sentence})
+                    
+                    if found_elements:
+                        return "call", found_elements  # action
+                    else:
+                        return "not_call", found_elements  # not action
+        except Exception as e:
+            print("error", e)
+        return "undefined", []  # not russian
 
     def check_mood(self, text):
+        found_words = []
         words = self.rgx.findall(text)
         for word in words:
             p = self.morph.parse(word)[0]
             if p.tag.mood == "impr":
-                return True
-        return False
+                found_words.append(word)
+        return found_words
 
     def check_need_word(self, text):
         need = ["нужно", "надо"]
-        n1 = need[0].lower()
-        n2 = need[1].lower()
-        verb_tags = ["VERB", "MD", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ", "VAFIN", "VMFIN", "VVFIN"]
         txt = text.lower()
         doc = self.nlp(txt)
-
         for token in doc:
-            if (
-                (token.head.text == n1 or token.head.text == n1)
-                or (token.head.text == n2 or token.head.text == n2)
-            ) and token.tag_ in verb_tags:
-                try:
-                    if token.head.nbor(-1).text == "не":
-                        continue
-                except:
-                    print("not found")
-                return True
-        return False
+            if token.head.text.lower() in need and self.morph.parse(token.text)[0].tag.POS == "INFN":
+                return [token.head.text, token.text]
+        return []
 
     def check_action_words(self, text):
         action_words = ["давайте", "предлагаю", "давно уже пора"]
         for word in action_words:
-            str = "(\A|\W)" + word.lower() + "(\W|\Z)"
-            s = re.search(str, text.lower())
-            if s is not None:
-                return True
-        return False
+            if word in text.lower():
+                return word
+        return ""
 
 
 text = "если хотите чтоб катались где-то в другом месте сделайте специальное место или трек для мотоспорта"
-call_to_action = CallToAction(vectorizer_flname = "ca_vectorizer.pk",
-                              vectorizer_url = "http://files.deeppavlov.ai/tmp/ca_vectorizer.pk",
-                              svc_flname = "ca_svc.pk",
-                              svc_url = "http://files.deeppavlov.ai/tmp/ca_svc.pk")
+call_to_action = CallToAction("agency_cls.json")
 
 cls = call_to_action(text)
 print(cls)
