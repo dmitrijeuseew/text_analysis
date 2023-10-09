@@ -25,3 +25,16 @@ services:
       - 8001:8001
     environment:
       - CUDA_VISIBLE_DEVICES=0
+
+  topics:
+    container_name: topics
+    build:
+      context: .
+      dockerfile: ./services/topics/Dockerfile
+    volumes:
+      - ./services/topics:/src
+      - /archive/evseev:/data
+    ports:
+      - 8002:8002
+    environment:
+      - CUDA_VISIBLE_DEVICES=4
