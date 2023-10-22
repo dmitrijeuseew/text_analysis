@@ -17,16 +17,33 @@ class CallToAction:
         self.morph = pymorphy2.MorphAnalyzer()
         self.rgx = re.compile("([\w']{2,})")
 
-    def __call__(self, text):
+    def __call__(self, sample):
+        text = sample["text"]
         cls_init, found_elements = self.find_by_verbs(text)
+        found_add_features = self.find_by_additional_features(sample)
         cls_batch, probas = self.cls_model([text])
         is_relevant = relevance_define(text, cls_init, found_elements)
-        if cls_init == "call":
+        if cls_init == "call" or found_add_features:
             if is_relevant:
                 if probas[0][2] > 0.5:
                     return "call", cls_init, cls_batch[0], is_relevant, found_elements
             return "not_call", cls_init, cls_batch[0], is_relevant, found_elements
         return cls_init, cls_init, cls, is_relevant, found_elements
+
+    def find_by_additional_features(self, sample):
+        found = False
+        text = sample.get("text", "")
+        likes = sample.get("likes", 0)
+        shares = sample.get("shares", 0)
+        comments = sample.get("comments", 0)
+        if len(text.split()) > 30:
+            found = True
+        doc = self.nlp(text)
+        if len(list(doc.ents)) > 0:
+            found = True
+        if likes or shares or comments:
+            found = True
+        return found
 
     def find_by_verbs(self, text):
         langs = ["ru", "bg"]
@@ -89,5 +106,5 @@ class CallToAction:
 text = "если хотите чтоб катались где-то в другом месте сделайте специальное место или трек для мотоспорта"
 call_to_action = CallToAction("agency_cls.json")
 
-cls = call_to_action(text)
+cls = call_to_action({"text": text})
 print(cls)
