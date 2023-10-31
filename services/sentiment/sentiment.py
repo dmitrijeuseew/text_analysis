@@ -1,7 +1,11 @@
+import logging
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 from tqdm import tqdm
 
+
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class Sentiment_classification():
     def __init__(self,
@@ -21,7 +25,8 @@ class Sentiment_classification():
         :return: sentiment label
         '''
         
-        inputs = tokenizer(text, return_tensors="pt")
+        inputs = self.tokenizer(text, return_tensors="pt")
+        inputs = {key: value.to(self.device) for key, value in inputs.items()}
         with torch.no_grad():
             logits = self.model(**inputs).logits
         predicted_class_id = logits.argmax().item()
@@ -45,7 +50,8 @@ class Emotion_detection():
         :return: sentiment label
         '''
 
-        inputs = tokenizer(text, return_tensors="pt")
+        inputs = self.tokenizer(text, return_tensors="pt")
+        inputs = {key: value.to(self.device) for key, value in inputs.items()}
         with torch.no_grad():
             logits = self.model(**inputs).logits
         predicted_class_id = logits.argmax().item()

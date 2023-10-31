@@ -1,3 +1,4 @@
+import logging
 from sentiment import Sentiment_classification, Emotion_detection, Toxicity_detection
 from dataset import VKPostsDataset
 from preprocessing import clean, find_congratulation, emoji2text
@@ -13,11 +14,14 @@ import re
 
 tqdm.pandas()
 
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def fill_result(clf, text):
     try:
         res = clf.classify_text(text)
-    except:
+    except Exception as e:
+        logger.info(f"error: {e}")
         res = None
 
     return res
