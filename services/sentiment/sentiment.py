@@ -21,7 +21,7 @@ class Sentiment_classification():
         :return: sentiment label
         '''
         
-        inputs = tokenizer("Hello, my dog is cute", return_tensors="pt")
+        inputs = tokenizer(text, return_tensors="pt")
         with torch.no_grad():
             logits = self.model(**inputs).logits
         predicted_class_id = logits.argmax().item()
@@ -45,7 +45,7 @@ class Emotion_detection():
         :return: sentiment label
         '''
 
-        inputs = tokenizer("Hello, my dog is cute", return_tensors="pt")
+        inputs = tokenizer(text, return_tensors="pt")
         with torch.no_grad():
             logits = self.model(**inputs).logits
         predicted_class_id = logits.argmax().item()
