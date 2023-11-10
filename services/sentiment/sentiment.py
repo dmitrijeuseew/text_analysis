@@ -16,6 +16,7 @@ class Sentiment_classification():
         self.model = AutoModelForSequenceClassification.from_pretrained(model_checkpoint)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
+        self.max_length = 500
 
     def classify_text(self, text):
         '''
@@ -25,7 +26,7 @@ class Sentiment_classification():
         :return: sentiment label
         '''
         
-        inputs = self.tokenizer(text, return_tensors="pt")
+        inputs = self.tokenizer(text, return_tensors="pt", max_length=self.max_length)
         inputs = {key: value.to(self.device) for key, value in inputs.items()}
         with torch.no_grad():
             logits = self.model(**inputs).logits
@@ -41,6 +42,7 @@ class Emotion_detection():
         self.model = AutoModelForSequenceClassification.from_pretrained(model_checkpoint)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
+        self.max_length = 500
 
     def classify_text(self, text):
         '''
@@ -50,7 +52,7 @@ class Emotion_detection():
         :return: sentiment label
         '''
 
-        inputs = self.tokenizer(text, return_tensors="pt")
+        inputs = self.tokenizer(text, return_tensors="pt", max_length=self.max_length)
         inputs = {key: value.to(self.device) for key, value in inputs.items()}
         with torch.no_grad():
             logits = self.model(**inputs).logits
@@ -69,12 +71,15 @@ class Toxicity_detection():
 
         if torch.cuda.is_available():
             self.model.cuda()
+        self.max_length = 500
 
     def text2toxicity(self, text, aggregate=True):
         """ Calculate toxicity of a text (if aggregate=True) or a vector of toxicity aspects (if aggregate=False)"""
 
         with torch.no_grad():
-            inputs = self.tokenizer(text, return_tensors='pt', truncation=True, padding=True).to(self.model.device)
+            inputs = self.tokenizer(
+                text, return_tensors='pt', truncation=True, padding=True, max_length=self.max_length
+            ).to(self.model.device)
             proba = torch.sigmoid(self.model(**inputs).logits).cpu().numpy()
         if isinstance(text, str):
             proba = proba[0]
