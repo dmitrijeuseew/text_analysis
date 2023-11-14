@@ -106,8 +106,9 @@ class EntityDetectionParser(Component):
             if tags[i].startswith("B-") and tags[i + 1].startswith("B-") \
                     and tags[i].split("-")[1] == tags[i + 1].split("-")[1]:
                 new_tag = f"I-{tags[i + 1].split('-')[1]}"
-                tag_probas[i + 1][self.tags_ind[new_tag]] = tag_probas[i + 1][self.tags_ind[tags[i + 1]]]
-                tags[i + 1] = new_tag
+                if new_tag in self.tags_ind:
+                    tag_probas[i + 1][self.tags_ind[new_tag]] = tag_probas[i + 1][self.tags_ind[tags[i + 1]]]
+                    tags[i + 1] = new_tag
 
         return tags, tag_probas
 
