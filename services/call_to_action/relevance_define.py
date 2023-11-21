@@ -114,7 +114,7 @@ def relevance_define(text, call, found_elements):
         for found_element in found_elements:
             if found_element["criteria"] != "need":
                 all_needs = False
-        if all_needs:
+        if all_needs and found_elements:
             exclaim_elements = []
             filtered_elements = []
             for found_element in found_elements:
