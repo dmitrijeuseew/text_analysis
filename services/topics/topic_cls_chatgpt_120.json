@@ -85,7 +85,7 @@
   "metadata": {
     "variables": {
       "TRANSFORMER": "DeepPavlov/rubert-base-cased",
-      "ROOT_PATH": "./data",
+      "ROOT_PATH": "/data",
       "DOWNLOADS_PATH": "{ROOT_PATH}/downloads",
       "MODELS_PATH": "{ROOT_PATH}/models",
       "MODEL_PATH": "{MODELS_PATH}/topic_cls_chatgpt_sp"
