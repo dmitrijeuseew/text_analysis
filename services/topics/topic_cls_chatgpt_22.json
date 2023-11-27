@@ -62,7 +62,7 @@
         "ref": "classes_vocab"
       }
     ],
-    "out": ["y_pred_labels"]
+    "out": ["y_pred_labels", "y_pred_probas"]
   },
   "train": {
     "epochs": 10,
@@ -85,7 +85,7 @@
   "metadata": {
     "variables": {
       "TRANSFORMER": "DeepPavlov/rubert-base-cased",
-      "ROOT_PATH": "/data",
+      "ROOT_PATH": "./data",
       "DOWNLOADS_PATH": "{ROOT_PATH}/downloads",
       "MODELS_PATH": "{ROOT_PATH}/models",
       "MODEL_PATH": "{MODELS_PATH}/topic_cls_chatgpt_base"
