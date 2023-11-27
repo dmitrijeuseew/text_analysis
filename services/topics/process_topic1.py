@@ -52,7 +52,7 @@ def preprocess_text(text):
 
 
 nf = 0
-with open(f"texts_november/{args.number}.pickle", 'rb') as inp:
+with open(f"texts_second_part/{args.number}.pickle", 'rb') as inp:
     samples = pickle.load(inp)
 
 print("started")
@@ -94,24 +94,18 @@ for i in range(num_batches):
 
         new_cur_twl = []
         for text_id, text, (label, proba1) in cur_twl:
-            if label.lower() == "здравоохранение":
+            if label.lower() == "здравоохранение" and len(text.split()) > 2:
                 processed_elements.append({"id": text_id, "text": text, "topic1": label, "proba1": float(round(proba1, 2))})
     except Exception as e:
         print(f"error: {e}")
-        cur_samples = samples[i*batch_size:(i+1)*batch_size]
-        cur_texts = [sample["text"] for sample in cur_samples]
-        cur_text_ids = [sample["id"] for sample in cur_samples]
-        for text_id, text in zip(cur_text_ids, cur_texts):
-            processed_elements.append({"text": text,
-                                       "topic1": "Не найдено",
-                                       "proba1": 1.0})
-    if i % 20 == 0 and i > 0:
-        with open(f"processed/{args.number}_{nf}.json", 'w', encoding="utf8") as out:
+
+    if i % 500 == 0 and i > 0:
+        with open(f"processed_second_part/{args.number}_{nf}.json", 'w', encoding="utf8") as out:
             json.dump(processed_elements, out, indent=2, ensure_ascii=False)
         processed_elements = []
         nf += 1
-        print("iter", nf)
+        print(args.number, "iter", nf)
 
-if processed_examples:
-    with open(f"processed/{args.number}_{nf}.json", 'w', encoding="utf8") as out:
+if processed_elements:
+    with open(f"processed_second_part/{args.number}_{nf}.json", 'w', encoding="utf8") as out:
         json.dump(processed_elements, out, indent=2, ensure_ascii=False)
