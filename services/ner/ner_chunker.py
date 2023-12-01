@@ -219,7 +219,12 @@ class NerChunkModel(Component):
                 zip(text_batch_list, sentences_offsets_batch_list, sentences_batch_list):
             text_batch = [text.replace("\xad", " ") for text in text_batch]
 
-            ner_tokens_batch, ner_tokens_offsets_batch, ner_probas_batch, probas_batch = self.ner(text_batch)
+            ner_tokens_batch, ner_tokens_offsets_batch, ner_probas_batch, probas_batch = \
+                [[[] for _ in text_batch] for _ in range(4)]
+            try:
+                ner_tokens_batch, ner_tokens_offsets_batch, ner_probas_batch, probas_batch = self.ner(text_batch)
+            except Exception as e:
+                print("error {e}")
             entity_substr_batch, entity_positions_batch, entity_probas_batch = \
                 self.ner_parser(ner_tokens_batch, ner_probas_batch, probas_batch)
 
