@@ -10,6 +10,8 @@ from nltk import sent_tokenize
 from relevance_define import relevance_define
 
 
+FIND_BY_VERBS = False
+
 class CallToAction:
     def __init__(self, config_name):
         self.cls_model = build_model(config_name, download=True)
@@ -18,8 +20,15 @@ class CallToAction:
         self.rgx = re.compile("([\w']{2,})")
 
     def __call__(self, sample):
+        if not isinstance(sample["text"], str):
+            sample["text"] = ""
+            cls_init = "not relevant"
+        else:
+            cls_init = "call"
         text = sample["text"]
-        cls_init, found_elements = self.find_by_verbs(text)
+        found_elements = []
+        if FIND_BY_VERBS:
+            cls_init, found_elements = self.find_by_verbs(text)
         found_add_features = self.find_by_additional_features(sample)
         cls_batch, probas = self.cls_model([text])
         is_relevant = relevance_define(text, cls_init, found_elements)
@@ -27,7 +36,9 @@ class CallToAction:
             if is_relevant:
                 if probas[0][2] > 0.5:
                     return "call", cls_init, cls_batch[0], is_relevant, found_elements
-            return "not_call", cls_init, cls_batch[0], is_relevant, found_elements
+                else:
+                    return "not call", cls_init, cls_batch[0], is_relevant, found_elements
+            return "not relevant", cls_init, cls_batch[0], is_relevant, found_elements
         return cls_init, cls_init, cls, is_relevant, found_elements
 
     def find_by_additional_features(self, sample):

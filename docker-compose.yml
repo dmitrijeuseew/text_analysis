@@ -38,3 +38,15 @@ services:
       - 8002:8002
     environment:
       - CUDA_VISIBLE_DEVICES=4
+
+  sentiment:
+    container_name: sentiment
+    build:
+      context: .
+      dockerfile: ./services/sentiment/Dockerfile
+    volumes:
+      - ./services/sentiment:/src
+    ports:
+      - 8003:8003
+    environment:
+      - CUDA_VISIBLE_DEVICES=4
