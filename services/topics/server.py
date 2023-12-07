@@ -156,7 +156,7 @@ async def model(payload: Payload):
                     if label2_h != "Не найдено":
                         label_sp = label2_h
                         proba_sp = proba2
-                    elif label_sp and label_sp[0] != "Не найдено"
+                    elif label_sp and label_sp[0] != "Не найдено":
                         subtopics = subtopics_dict.get(label, [])
                         fs = False
                         for subtopic in label_sp[:10]:
