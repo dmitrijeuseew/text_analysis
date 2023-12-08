@@ -5,7 +5,6 @@ import uvicorn
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 from deeppavlov import build_model
-import os
 
 
 logger = getLogger(__file__)
@@ -22,19 +21,15 @@ subtopic_cls = build_model("topic_cls_chatgpt_120.json", download=True)
 topics2_health = build_model("topics2_health_education.json", download=True)
 topics3_health = build_model("topics3_health_education.json", download=True)
 
-if os.path.exists('/data/models/classifiers'):
-    print('ok')
-    print(os.listdir('/data/models/classifiers'))
-
 topics1_list = []
-with open("/data/models/classifiers/topic_cls_chatgpt_base/classes.dict", 'r') as inp:
+with open("/data/models/topic_cls_chatgpt_base/classes.dict", 'r') as inp:
     lines = inp.readlines()
     for line in lines:
         line_split = line.strip().split("\t")
         topics1_list.append(line_split[0])
 
 topics2_list = []
-with open("/data/models/classifiers/topic_cls_chatgpt_sp/classes.dict", 'r') as inp:
+with open("/data/models/topic_cls_chatgpt_sp/classes.dict", 'r') as inp:
     lines = inp.readlines()
     for line in lines:
         line_split = line.strip().split("\t")
