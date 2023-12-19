@@ -18,8 +18,8 @@ class Payload(BaseModel):
 
 topic_cls = build_model("topic_cls_chatgpt_22.json", download=True)
 subtopic_cls = build_model("topic_cls_chatgpt_120.json", download=True)
-topics2_health = build_model("topics2_health_education.json", download=True)
-topics3_health = build_model("topics3_health_education.json", download=True)
+topics2_health = build_model("topics2_h_e_s.json", download=True)
+topics3_health = build_model("topics3_h_e_s.json", download=True)
 
 topics1_list = []
 with open("/data/models/classifiers/topic_cls_chatgpt_base/classes.dict", 'r') as inp:
@@ -36,14 +36,14 @@ with open("/data/models/classifiers/topic_cls_chatgpt_sp/classes.dict", 'r') as 
         topics2_list.append(line_split[0])
 
 topics2_h_list = []
-with open("/data/models/classifiers/topics2_h_e/classes.dict", 'r') as inp:
+with open("/data/models/classifiers/topics2_h_e_s/classes.dict", 'r') as inp:
     lines = inp.readlines()
     for line in lines:
         line_split = line.strip().split("\t")
         topics2_h_list.append(line_split[0])
 
 topics3_h_list = []
-with open("/data/models/classifiers/topics3_h_e/classes.dict", 'r') as inp:
+with open("/data/models/classifiers/topics3_h_e_s/classes.dict", 'r') as inp:
     lines = inp.readlines()
     for line in lines:
         line_split = line.strip().split("\t")
@@ -116,12 +116,14 @@ async def model(payload: Payload):
                     
                     label2_probas_h = zip(topics2_h_list, proba2_h)
                     label2_probas_h = sorted(label2_probas_h, key=lambda x: x[1], reverse=True)
-                    if label.lower() not in ["здравоохранение", "образование"]:
+                    if label.lower() not in ["здравоохранение", "образование"] or "социальное" not in label.lower():
                         label2_h = "Не найдено"
 
                     if label.lower() == "здравоохранение" and label2_h.lower() not in topics_by_categories["topics2_h"]:
                         label2_h = "Не найдено"
                     if label.lower() == "образование" and label2_h.lower() not in topics_by_categories["topics2_e"]:
+                        label2_h = "Не найдено"
+                    if "социальное" in label.lower() and label2_h.lower() not in topics_by_categories["topics2_s"]:
                         label2_h = "Не найдено"
 
                     label3_probas_h = zip(topics3_h_list, proba3_h)
@@ -132,6 +134,8 @@ async def model(payload: Payload):
                     if label.lower() == "здравоохранение" and label3_h.lower() not in topics_by_categories["topics3_h"]:
                         label3_h = "Не найдено"
                     if label.lower() == "образование" and label3_h.lower() not in topics_by_categories["topics3_e"]:
+                        label3_h = "Не найдено"
+                    if "социальное" in label.lower() and label3_h.lower() not in topics_by_categories["topics3_s"]:
                         label3_h = "Не найдено"
 
                     f_labels.append([(label, label1_probas[0][1]), (label2_h, label2_probas_h[0][1]),
