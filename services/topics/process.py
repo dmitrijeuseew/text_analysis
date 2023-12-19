@@ -4,7 +4,6 @@ import os
 import pickle
 from logging import getLogger
 from typing import Optional, List
-import uvicorn
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 from deeppavlov import build_model
