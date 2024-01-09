@@ -84,8 +84,8 @@
   },
   "metadata": {
     "variables": {
-      "TRANSFORMER": "DeepPavlov/rubert-base-cased",
-      "ROOT_PATH": "/data",
+      "TRANSFORMER": "./data/downloads/torch_bert_models/rubert_base_cased",
+      "ROOT_PATH": "./data",
       "DOWNLOADS_PATH": "{ROOT_PATH}/downloads",
       "MODELS_PATH": "{ROOT_PATH}/models",
       "MODEL_PATH": "{MODELS_PATH}/topic_cls_chatgpt_base"
@@ -94,6 +94,10 @@
       {
         "url": "http://files.deeppavlov.ai/tmp/topic_cls_chatgpt_base.tar.gz",
         "subdir": "{MODELS_PATH}/topic_cls_chatgpt_base"
+      },
+      {
+        "url": "http://files.deeppavlov.ai/deeppavlov_data/entity_linking/rubert_base_cased.tar.gz",
+        "subdir": "{DOWNLOADS_PATH}/torch_bert_models/rubert_base_cased"
       },
       {
         "url": "http://files.deeppavlov.ai/tmp/topic_cls_2k_22.json",
