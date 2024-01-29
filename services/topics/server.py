@@ -29,30 +29,30 @@ with open("./data/models/topic_cls_chatgpt_base/classes.dict", 'r') as inp:
         topics1_list.append(line_split[0])
 
 topics2_list = []
-with open("/data/models/topic_cls_chatgpt_sp/classes.dict", 'r') as inp:
+with open("./data/models/topic_cls_chatgpt_sp/classes.dict", 'r') as inp:
     lines = inp.readlines()
     for line in lines:
         line_split = line.strip().split("\t")
         topics2_list.append(line_split[0])
 
 topics2_h_list = []
-with open("/data/models/classifiers/topics2_h_e_s/classes.dict", 'r') as inp:
+with open("./data/models/classifiers/topics2_h_e_s/classes.dict", 'r') as inp:
     lines = inp.readlines()
     for line in lines:
         line_split = line.strip().split("\t")
         topics2_h_list.append(line_split[0])
 
 topics3_h_list = []
-with open("/data/models/classifiers/topics3_h_e_s/classes.dict", 'r') as inp:
+with open("./data/models/classifiers/topics3_h_e_s/classes.dict", 'r') as inp:
     lines = inp.readlines()
     for line in lines:
         line_split = line.strip().split("\t")
         topics3_h_list.append(line_split[0])
 
-with open("/data/models/classifiers/topics_by_categories.json", 'r') as inp:
+with open("./data/models/classifiers/topics_by_categories.json", 'r') as inp:
     topics_by_categories = json.load(inp)
 
-file_subtopics = "/data/downloads/topic_subtopics.json"
+file_subtopics = "./data/downloads/topic_subtopics.json"
 subtopics_dict = json.load(open(file_subtopics))
 
 bashkir_letters = "ҙҡәҫңғ"
