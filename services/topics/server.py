@@ -22,7 +22,7 @@ topics2_health = build_model("topics2_h_e_s.json", download=True)
 topics3_health = build_model("topics3_h_e_s.json", download=True)
 
 topics1_list = []
-with open("/data/models/classifiers/topic_cls_chatgpt_base/classes.dict", 'r') as inp:
+with open("./data/models/topic_cls_chatgpt_base/classes.dict", 'r') as inp:
     lines = inp.readlines()
     for line in lines:
         line_split = line.strip().split("\t")
