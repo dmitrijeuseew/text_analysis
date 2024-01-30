@@ -16,6 +16,6 @@ RUN pip install websockets
 
 WORKDIR /src
 
-COPY . .
+COPY /services/call_to_action /src
 
 CMD python server.py
