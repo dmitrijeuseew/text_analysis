@@ -33,7 +33,7 @@ services:
       dockerfile: ./services/topics/Dockerfile
     volumes:
       - ./services/topics:/src
-      - /archive/evseev:/data
+      - ~/data:/data
     ports:
       - 8002:8002
     environment:
@@ -48,5 +48,17 @@ services:
       - ./services/sentiment:/src
     ports:
       - 8003:8003
+    environment:
+      - CUDA_VISIBLE_DEVICES=4
+
+  call-to-action:
+    build:
+      context: .
+      dockerfile: ./services/call_to_action/Dockerfile
+    volumes:
+      - ./services/call_to_action:/src
+      - ~/data:/data
+    ports:
+      - 8004:8004
     environment:
       - CUDA_VISIBLE_DEVICES=4
