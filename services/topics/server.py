@@ -104,8 +104,7 @@ async def model(payload: Payload):
             labels_sp, probas_sp = subtopic_cls(raw_texts)
             labels2_h, probas2_h = topics2_health(raw_texts)
             labels3_h, probas3_h = topics3_health(raw_texts)
-            logger.info(f"labels {labels}, probas {probas}, labels_sp {labels_sp}, probas_sp {probas_sp}, labels2_h {labels2_h},
-                probas2_h {probas2_h}, labels3_h {labels3_h}, probas3_h {probas3_h}")
+            logger.info(f"labels {labels}, probas {probas}, labels_sp {labels_sp}, probas_sp {probas_sp}, labels2_h {labels2_h},probas2_h {probas2_h}, labels3_h {labels3_h}, probas3_h {probas3_h}")
 
             for nl, (label, proba, label2_h, proba2_h, label3_h, proba3_h, label_sp, proba_sp) in \
                     enumerate(zip(labels, probas, labels2_h, probas2_h, labels3_h, probas3_h, labels_sp,
