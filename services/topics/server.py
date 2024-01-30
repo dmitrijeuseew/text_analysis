@@ -147,11 +147,11 @@ async def model(payload: Payload):
 
         total_labels = f_labels + nf_labels
         total_labels = sorted(total_labels, key=lambda x: x[-1])
-        cur_twl = [[text_id, text, element[0], element[1], element[2], element[3]]
-                   for text_id, text, element in zip(cur_text_ids, cur_texts, total_labels)]
+        cur_twl = [[text, element[0], element[1], element[2], element[3]]
+                   for text, element in zip(cur_texts, total_labels)]
 
         new_cur_twl = []
-        for text_id, text, (label, proba1), (label2_h, proba2), (label3_h, proba3), (label_sp, proba_sp) in cur_twl:
+        for text, (label, proba1), (label2_h, proba2), (label3_h, proba3), (label_sp, proba_sp) in cur_twl:
             if label == "Не найдено":
                 label_sp = "Не найдено"
                 label3 = "Не найдено"
