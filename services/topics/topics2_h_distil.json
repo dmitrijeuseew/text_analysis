@@ -1,12 +1,4 @@
 {
-  "dataset_reader": {
-    "class_name": "sq_reader",
-    "data_path": "{DOWNLOADS_PATH}/topic_cls_2k_22.json"
-  },
-  "dataset_iterator": {
-    "class_name": "basic_classification_iterator",
-    "seed": 42
-  },
   "chainer": {
     "in": ["x"],
     "in_y": ["y"],
@@ -64,48 +56,22 @@
     ],
     "out": ["y_pred_labels", "y_pred_probas"]
   },
-  "train": {
-    "epochs": 10,
-    "batch_size": 12,
-    "metrics": [
-      "f1_macro",
-      "accuracy",
-      {
-        "name": "roc_auc",
-        "inputs": ["y_onehot", "y_pred_probas"]
-      }
-    ],
-    "validation_patience": 10,
-    "val_every_n_batches": 100,
-    "log_every_n_batches": 100,
-    "show_examples": false,
-    "evaluation_targets": ["train", "valid", "test"],
-    "class_name": "torch_trainer"
-  },
   "metadata": {
     "variables": {
-      "TRANSFORMER": "/data/downloads/torch_bert_models/rubert_base_cased",
+      "TRANSFORMER": "/data/downloads/torch_bert_models/distilrubert_tiny_v1",
       "ROOT_PATH": "/data",
       "DOWNLOADS_PATH": "{ROOT_PATH}/downloads",
       "MODELS_PATH": "{ROOT_PATH}/models",
-      "MODEL_PATH": "{MODELS_PATH}/topic_cls_chatgpt_base"
+      "MODEL_PATH": "{MODELS_PATH}/classifiers/topics2_h_distil"
     },
     "download": [
       {
-        "url": "http://files.deeppavlov.ai/tmp/topic_cls_chatgpt_base.tar.gz",
-        "subdir": "{MODELS_PATH}/topic_cls_chatgpt_base"
+        "url": "http://files.deeppavlov.ai/tmp/topics2_h_distil.tar.gz",
+        "subdir": "{MODEL_PATH}"
       },
       {
-        "url": "http://files.deeppavlov.ai/deeppavlov_data/entity_linking/rubert_base_cased.tar.gz",
-        "subdir": "{DOWNLOADS_PATH}/torch_bert_models/rubert_base_cased"
-      },
-      {
-        "url": "http://files.deeppavlov.ai/tmp/topic_cls_2k_22.json",
-        "subdir": "{DOWNLOADS_PATH}"
-      },
-      {
-        "url": "http://files.deeppavlov.ai/tmp/topic_subtopics.json",
-        "subdir": "{DOWNLOADS_PATH}"
+        "url": "http://files.deeppavlov.ai/tmp/distilrubert_tiny_v1.tar.gz",
+        "subdir": "{DOWNLOADS_PATH}/torch_bert_models/distilrubert_tiny_v1"
       }
     ]
   }
