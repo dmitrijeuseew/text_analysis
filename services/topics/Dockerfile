@@ -18,4 +18,4 @@ WORKDIR /src
 
 COPY /services/topics /src
 
-CMD python server.py
+CMD python server_acc.py
