@@ -5,6 +5,7 @@ import pickle
 from logging import getLogger
 from typing import Optional, List
 from deeppavlov import build_model
+from deeppavlov.core.commands.utils import parse_config
 
 
 parser = argparse.ArgumentParser()
@@ -20,15 +21,111 @@ nf = 0
 with open(f"texts_08.12/{args.number}.pickle", 'rb') as inp:
     data = pickle.load(inp)
 
-topic_cls = build_model("topic_cls_chatgpt_22.json", download=True)
-topic_cls_h_e_s = build_model("topic_cls_h_e_s.json", download=True)
-subtopic_cls = build_model("topic_cls_chatgpt_120.json", download=True)
+topic_cls_config = parse_config("topic_cls_chatgpt_22.json")
+topic_cls_h_e_s_config = parse_config("topic_cls_h_e_s.json")
+subtopic_cls_config = parse_config("topic_cls_chatgpt_120.json")
 
-topics2_h = build_model("topics2_h_distil.json", download=True)
-topics3_h = build_model("topics3_h.json", download=True)
+topics2_h_config = parse_config("topics2_h_distil.json")
+topics3_h_config = parse_config("topics3_h.json")
 
-topics2_e_s = build_model("topics2_e_s.json", download=True)
-topics3_e_s = build_model("topics3_e_s.json", download=True)
+topics2_e_s_config = parse_config("topics2_e_s.json")
+topics3_e_s_config = parse_config("topics3_e_s.json")
+
+cwd = os.getcwd()
+for key in topic_cls_config["metadata"]["variables"].keys():
+    topic_cls_config["metadata"]["variables"][key] = \
+        topic_cls_config["metadata"]["variables"][key].replace("/data", f"{cwd}/data")
+for i in range(len(topic_cls_config["metadata"]["download"])):
+    topic_cls_config["metadata"]["download"][i]["subdir"] = \
+        topic_cls_config["metadata"]["download"][i]["subdir"].replace("/data", f"{cwd}/data")
+for i in range(len(topic_cls_config["chainer"]["pipe"])):
+    for key in topic_cls_config["chainer"]["pipe"][i]:
+        if key in ["vocab_file", "save_path", "load_path", "pretrained_bert"]:
+            topic_cls_config["chainer"]["pipe"][i][key] = \
+                topic_cls_config["chainer"]["pipe"][i][key].replace("/data", f"{cwd}/data")
+
+for key in topic_cls_h_e_s_config["metadata"]["variables"].keys():
+    topic_cls_h_e_s_config["metadata"]["variables"][key] = \
+        topic_cls_h_e_s_config["metadata"]["variables"][key].replace("/data", f"{cwd}/data")
+for i in range(len(topic_cls_h_e_s_config["metadata"]["download"])):
+    topic_cls_h_e_s_config["metadata"]["download"][i]["subdir"] = \
+        topic_cls_h_e_s_config["metadata"]["download"][i]["subdir"].replace("/data", f"{cwd}/data")
+for i in range(len(topic_cls_h_e_s_config["chainer"]["pipe"])):
+    for key in topic_cls_h_e_s_config["chainer"]["pipe"][i]:
+        if key in ["vocab_file", "save_path", "load_path", "pretrained_bert"]:
+            topic_cls_h_e_s_config["chainer"]["pipe"][i][key] = \
+                topic_cls_h_e_s_config["chainer"]["pipe"][i][key].replace("/data", f"{cwd}/data")
+
+for key in subtopic_cls_config["metadata"]["variables"].keys():
+    subtopic_cls_config["metadata"]["variables"][key] = \
+        subtopic_cls_config["metadata"]["variables"][key].replace("/data", f"{cwd}/data")
+for i in range(len(subtopic_cls_config["metadata"]["download"])):
+    subtopic_cls_config["metadata"]["download"][i]["subdir"] = \
+        subtopic_cls_config["metadata"]["download"][i]["subdir"].replace("/data", f"{cwd}/data")
+for i in range(len(subtopic_cls_config["chainer"]["pipe"])):
+    for key in subtopic_cls_config["chainer"]["pipe"][i]:
+        if key in ["vocab_file", "save_path", "load_path", "pretrained_bert"]:
+            subtopic_cls_config["chainer"]["pipe"][i][key] = \
+                subtopic_cls_config["chainer"]["pipe"][i][key].replace("/data", f"{cwd}/data")
+
+for key in topics2_h_config["metadata"]["variables"].keys():
+    topics2_h_config["metadata"]["variables"][key] = \
+        topics2_h_config["metadata"]["variables"][key].replace("/data", f"{cwd}/data")
+for i in range(len(topics2_h_config["metadata"]["download"])):
+    topics2_h_config["metadata"]["download"][i]["subdir"] = \
+        topics2_h_config["metadata"]["download"][i]["subdir"].replace("/data", f"{cwd}/data")
+for i in range(len(topics2_h_config["chainer"]["pipe"])):
+    for key in topics2_h_config["chainer"]["pipe"][i]:
+        if key in ["vocab_file", "save_path", "load_path", "pretrained_bert"]:
+            topics2_h_config["chainer"]["pipe"][i][key] = \
+                topics2_h_config["chainer"]["pipe"][i][key].replace("/data", f"{cwd}/data")
+
+for key in topics3_h_config["metadata"]["variables"].keys():
+    topics3_h_config["metadata"]["variables"][key] = \
+        topics3_h_config["metadata"]["variables"][key].replace("/data", f"{cwd}/data")
+for i in range(len(topics3_h_config["metadata"]["download"])):
+    topics3_h_config["metadata"]["download"][i]["subdir"] = \
+        topics3_h_config["metadata"]["download"][i]["subdir"].replace("/data", f"{cwd}/data")
+for i in range(len(topics3_h_config["chainer"]["pipe"])):
+    for key in topics3_h_config["chainer"]["pipe"][i]:
+        if key in ["vocab_file", "save_path", "load_path", "pretrained_bert"]:
+            topics3_h_config["chainer"]["pipe"][i][key] = \
+                topics3_h_config["chainer"]["pipe"][i][key].replace("/data", f"{cwd}/data")
+
+for key in topics2_e_s_config["metadata"]["variables"].keys():
+    topics2_e_s_config["metadata"]["variables"][key] = \
+        topics2_e_s_config["metadata"]["variables"][key].replace("/data", f"{cwd}/data")
+for i in range(len(topics2_e_s_config["metadata"]["download"])):
+    topics2_e_s_config["metadata"]["download"][i]["subdir"] = \
+        topics2_e_s_config["metadata"]["download"][i]["subdir"].replace("/data", f"{cwd}/data")
+for i in range(len(topics2_e_s_config["chainer"]["pipe"])):
+    for key in topics2_e_s_config["chainer"]["pipe"][i]:
+        if key in ["vocab_file", "save_path", "load_path", "pretrained_bert"]:
+            topics2_e_s_config["chainer"]["pipe"][i][key] = \
+                topics2_e_s_config["chainer"]["pipe"][i][key].replace("/data", f"{cwd}/data")
+
+for key in topics3_e_s_config["metadata"]["variables"].keys():
+    topics3_e_s_config["metadata"]["variables"][key] = \
+        topics3_e_s_config["metadata"]["variables"][key].replace("/data", f"{cwd}/data")
+for i in range(len(topics3_e_s_config["metadata"]["download"])):
+    topics3_e_s_config["metadata"]["download"][i]["subdir"] = \
+        topics3_e_s_config["metadata"]["download"][i]["subdir"].replace("/data", f"{cwd}/data")
+for i in range(len(topics3_e_s_config["chainer"]["pipe"])):
+    for key in topics3_e_s_config["chainer"]["pipe"][i]:
+        if key in ["vocab_file", "save_path", "load_path", "pretrained_bert"]:
+            topics3_e_s_config["chainer"]["pipe"][i][key] = \
+                topics3_e_s_config["chainer"]["pipe"][i][key].replace("/data", f"{cwd}/data")
+
+
+topic_cls = build_model(topic_cls_config, download=True)
+topic_cls_h_e_s = build_model(topic_cls_h_e_s_config, download=True)
+subtopic_cls = build_model(subtopic_cls_config, download=True)
+
+topics2_h = build_model(topics2_h_config, download=True)
+topics3_h = build_model(topics3_h_config, download=True)
+
+topics2_e_s = build_model(topics2_e_s_config, download=True)
+topics3_e_s = build_model(topics3_e_s_config, download=True)
 
 topics1_list = []
 with open("./data/models/topic_cls_chatgpt_base/classes.dict", 'r') as inp:
@@ -162,7 +259,7 @@ for i in range(num_batches):
                     label1 = label_h_e_s
                 for cur_label, cur_proba in label1_probas:
                     if cur_label == label1:
-                        proba1 = (cur_proba + proba) / 2
+                        proba1 = cur_proba
                         break
                 label2_probas = zip(topics2_list, proba_sp)
                 label2_probas = sorted(label2_probas, key=lambda x: x[1], reverse=True)
